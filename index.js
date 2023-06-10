@@ -210,6 +210,52 @@ app.post(
   }
 )
 
+// post a movie
+app.post(
+  '/movies',
+
+  (req, res) => {
+    const movie = req.body
+
+    Movies.findOne({ Title: movie.Title })
+      .then((movie) => {
+        if (movie) {
+          return res.status(400).send(movie.Title + ' already exists')
+        } else {
+          Movies.create(req.body)
+            .then((movie) => {
+              res.status(201).json(movie)
+            })
+            .catch((error) => {
+              console.error(error)
+              res.status(500).send('Error: ' + error)
+            })
+        }
+      })
+      .catch((error) => {
+        console.error(error)
+        res.status(500).send('Error: ' + error)
+      })
+  }
+)
+
+// get movie base on id
+app.get(
+  '/movies/:id',
+  passport.authenticate('jwt', { session: false }),
+  (req, res) => {
+    Movies.findOne({ _id: req.params.id })
+
+      .then((movie) => {
+        res.json(movie)
+      })
+      .catch((err) => {
+        console.error(err)
+        res.status(500).send('Error: ' + err)
+      })
+  }
+)
+
 // DELETE a movie by movie ID
 app.delete(
   '/users/:Username/movies/:MovieID',
