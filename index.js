@@ -214,6 +214,7 @@ app.post(
 app.post(
   '/movies',
 
+  passport.authenticate('jwt', { session: false }),
   (req, res) => {
     const movie = req.body
 
@@ -255,7 +256,6 @@ app.get(
       })
   }
 )
-
 // DELETE a movie by movie ID
 app.delete(
   '/users/:Username/movies/:MovieID',
